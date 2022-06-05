@@ -1,0 +1,102 @@
+syntax="proto3";
+package video;
+option go_package = "video";
+import "user.proto";
+
+message Video {
+    uint64 id = 1;
+    string title = 2;
+    user.User author = 3;
+    string play_url = 4;
+    string cover_url = 5;
+    uint64 favorite_count = 6;
+    uint64 comment_count =7;
+    bool is_favorite = 8;
+}
+
+message Comment {
+    uint64 id = 1;
+    user.User user = 2;
+    string content = 3;
+    string create_date = 4;
+}
+
+message FeedRequest {
+    int64 latest_time = 1;
+    uint64 user_id = 2;
+}
+
+message FeedResponse {
+    user.BaseResponse base_resp = 1;
+    repeated Video video_list = 2;
+    int64 next_time = 3;
+}
+
+message PublishActionRequest {
+    uint64 user_id = 1;
+    bytes data = 2;
+    string title = 3;
+    string file_ext = 4;
+}
+
+message PublishListRequest {
+    uint64 user_id = 1;
+    uint64 target_id = 2;
+}
+
+message PublishListResponse {
+    user.BaseResponse base_resp = 1;
+    repeated Video video_list = 2;
+}
+
+message FavoriteActionRequest {
+    uint64 user_id = 1;
+    uint64 video_id = 2;
+}
+
+message FavoriteListRequest {
+    uint64 user_id = 1;
+    uint64 target_id = 2;
+}
+
+message FavoriteListResponse {
+    user.BaseResponse base_resp = 1;
+    repeated video.Video video_list = 2;
+}
+
+message CommentActionRequest {
+    uint64 user_id = 1;
+    uint64 video_id = 2;
+    string comment_text = 3;
+    uint64 comment_id = 4;
+}
+
+message CommentActionResponse {
+    user.BaseResponse base_resp = 1;
+    Comment comment = 2;
+}
+
+message CommentListRequest {
+    uint64 user_id = 1;
+    uint64 video_id = 2;
+}
+
+message CommentListResponse {
+    user.BaseResponse base_resp = 1;
+    repeated Comment comment_list = 2;
+}
+
+service VideoService {
+    rpc Feed(FeedRequest) returns (FeedResponse) {}
+    rpc Publish(PublishActionRequest) returns (user.BaseResponse) {}
+    rpc MGetVideo(PublishListRequest) returns (PublishListResponse) {}
+    rpc Favorite(FavoriteActionRequest) returns (user.BaseResponse) {}
+    rpc CancelFavorite(FavoriteActionRequest) returns (user.BaseResponse) {}
+    rpc MGetFavorite(FavoriteListRequest) returns (FavoriteListResponse) {}
+    rpc Comment(CommentActionRequest) returns (CommentActionResponse) {}
+    rpc DeleteComment(CommentActionRequest) returns (CommentActionResponse) {}
+    rpc MGetComment(CommentListRequest) returns (CommentListResponse) {}
+}
+
+
+
